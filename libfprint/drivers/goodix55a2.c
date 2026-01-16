@@ -18,6 +18,9 @@
 #define GOODIX55A2_FRAME_WIDTH    GOODIX55A2_SENSOR_HEIGHT
 #define GOODIX55A2_FRAME_HEIGHT   GOODIX55A2_SENSOR_WIDTH
 
+#define GOODIX55A2_DPI 500.0
+#define GOODIX55A2_PPMM (GOODIX55A2_DPI / 25.4)   // ~19.685
+
 #define GOODIX55A2_FRAME_PIXELS   (GOODIX55A2_SENSOR_WIDTH * GOODIX55A2_SENSOR_HEIGHT)
 #define GOODIX55A2_PACKED_FRAME   ((GOODIX55A2_FRAME_PIXELS * 12) / 8)
 #define GOODIX55A2_FRAME_CHECKSUM 4
@@ -893,7 +896,7 @@ goodix55a2_capture_frame (FpiDeviceGoodix55a2 *self,
 
   FpImage *image = fp_image_new (GOODIX55A2_FRAME_WIDTH, GOODIX55A2_FRAME_HEIGHT);
   goodix55a2_fill_image (image, samples);
-  image->ppmm = 8.0;
+  image->ppmm = GOODIX55A2_PPMM;
   *out_image = image;
 
   return TRUE;
