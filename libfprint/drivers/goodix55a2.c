@@ -926,6 +926,9 @@ goodix55a2_capture_frame (FpiDeviceGoodix55a2 *self,
 
   FpImage *image = fp_image_new (GOODIX55A2_FRAME_WIDTH, GOODIX55A2_FRAME_HEIGHT);
   goodix55a2_fill_image (image, samples);
+  goodix55a2_detrend_columns_u8 (image->data,
+                                 GOODIX55A2_FRAME_WIDTH,
+                                 GOODIX55A2_FRAME_HEIGHT);
   image->ppmm = GOODIX55A2_PPMM;
   *out_image = image;
 
