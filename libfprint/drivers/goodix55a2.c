@@ -167,6 +167,36 @@ goodix55a2_bytes_from_hex (const char *hex)
 
   return bytes;
 }
+static void
+goodix55a2_detrend_columns_u8 (guint8 *img, int w, int h)
+{
+  // we calculate the mean of each column, and subtract the column bias relative to the global mean
+  g_autofree int *col_mean = g_new0 (int, w);
+
+  long global_sum = 0;
+  for (int x = 0; x < w; x++)
+    {
+      long s = 0;
+      for (int y = 0; y < h; y++)
+        s += img[y * w + x];
+      col_mean[x] = (int) (s / h);
+      global_sum += col_mean[x];
+    }
+
+  int global_mean = (int) (global_sum / w);
+
+  for (int x = 0; x < w; x++)
+    {
+      int bias = col_mean[x] - global_mean;
+      for (int y = 0; y < h; y++)
+        {
+          int v = (int) img[y * w + x] - bias;
+          if (v < 0) v = 0;
+          if (v > 255) v = 255;   // [0,255]
+          img[y * w + x] = (guint8) v;
+        }
+    }
+}
 
 static gboolean
 goodix55a2_usb_bulk_write (FpiDeviceGoodix55a2 *self,
