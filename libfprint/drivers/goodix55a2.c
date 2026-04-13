@@ -1323,9 +1323,7 @@ goodix55a2_handle_capture (FpiDeviceGoodix55a2 *self)
           self->strips = NULL;
           self->strips_len = 0;
         }
-      fpi_image_device_report_finger_status (dev, FALSE);
-      /* returning without calling image_captured causes libfprint to
-       * call change_state(AWAIT_FINGER_ON) again automatically */
+      fpi_image_device_retry_scan (dev, FP_DEVICE_RETRY_TOO_SHORT);
       return;
     }
 
